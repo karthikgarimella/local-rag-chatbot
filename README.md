@@ -87,7 +87,7 @@ ollama pull phi
 Place all files inside a folder, e.g.:
 
 rag_chatbot/
-├── app.py
+├── code.py
 ├── rag_basic.py
 ├── README.md
 
@@ -198,4 +198,5 @@ Strong debugging and architectural reasoning
 📌 Note
 
 Response latency is expected due to fully local execution on CPU.
+
 This is an intentional trade-off for cost, privacy, and transparency.
