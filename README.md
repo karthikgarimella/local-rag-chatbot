@@ -1,202 +1,123 @@
-Local Q&A Chatbot using RAG
-🔍 Project Overview
+Local RAG PDF Chatbot
+A fully local, privacy-first PDF Question & Answer chatbot using Retrieval-Augmented Generation (RAG). Answers questions strictly from uploaded documents without using any paid APIs or cloud services.
 
-This project is a fully local Retrieval-Augmented Generation (RAG) based Question & Answer chatbot that allows users to upload a PDF document and ask questions about its content.
+🎯 Overview
+This project demonstrates practical RAG implementation for document-based Q&A. The system runs entirely on your local machine, preserves data privacy, and reduces hallucinations by grounding answers in retrieved context.
+Key Benefits:
 
-Unlike cloud-based solutions, this chatbot:
-
-Runs entirely on a local machine
-
-Uses open-source LLMs
-
-Does not rely on any paid APIs
-
-Answers strictly from the uploaded document, reducing hallucinations
-
-The goal of this project is to demonstrate a clear, practical understanding of RAG architecture, vector search, and LLM grounding — not just tool usage.
-
-🧠 What Problem Does This Solve?
-
-Large Language Models (LLMs) often:
-
-Hallucinate answers
-
-Lack access to private or domain-specific data
-
-Require expensive cloud APIs
-
-This project solves that by:
-
-Retrieving relevant document chunks using embeddings + vector search
-
-Injecting those chunks into the LLM prompt
-
-Forcing the model to answer only from retrieved context
-
-🏗️ Architecture (RAG Flow)
-User Question
-   ↓
-Convert question to embedding
-   ↓
-FAISS Vector Search (Top-K relevant chunks)
-   ↓
-Context Injection into Prompt
-   ↓
-Local LLM (Ollama)
-   ↓
-Grounded Answer
+✅ Fully local execution (no cloud, no APIs)
+✅ Complete data privacy
+✅ Zero cost (open-source models)
+✅ Answers only from provided documents
 
 
-This explicit pipeline avoids high-level black-box abstractions and keeps the system transparent and explainable.
+🏗️ How It Works
+PDF Upload → Text Extraction → Chunking → Embeddings → 
+FAISS Vector Store → Semantic Search → LLM Answer Generation
 
-🧰 Tech Stack & Rationale
-Component	Technology	Why It Was Used
-LLM	Ollama (phi / tinyllama)	Fully local inference, no paid APIs
-Embeddings	sentence-transformers (MiniLM)	Lightweight and fast on CPU
-Vector DB	FAISS	Efficient similarity search
-RAG Logic	Custom retrieval + prompt injection	Avoids unstable high-level wrappers
-UI	Streamlit	Simple, fast chatbot interface
-Language	Python	Strong ecosystem for GenAI
-🚀 Features
+PDF text is extracted and split into chunks
+Chunks are embedded using sentence-transformers
+FAISS indexes embeddings for similarity search
+User questions retrieve relevant chunks
+Local LLM generates answers using only retrieved context
 
-📤 Upload any PDF document
 
-💬 Ask natural language questions
+🧰 Tech Stack
+ComponentTechnologyUIStreamlitRAG FrameworkLangChain CommunityVector DBFAISSEmbeddingssentence-transformers (MiniLM-L6-v2)LLMOllama (phi model)
 
-🧠 Retrieval-Augmented Generation (true RAG)
-
-🚫 No hallucinated answers (context enforced)
-
-🖥️ Fully local execution (privacy-first)
-
-⚡ Optimized for CPU-only systems
-
-▶️ How to Run Locally
-1️⃣ Prerequisites
+🚀 Quick Start
+Prerequisites
 
 Python 3.10+
+Ollama installed
 
-Ollama installed and running
+Installation
+bash# Clone repository
+git clone https://github.com/karthikgarimella/local-rag-chatbot.git
+cd local-rag-chatbot
 
-Local LLM pulled (e.g. phi or tinyllama)
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
+# Install dependencies
+pip install streamlit langchain langchain-community langchain-text-splitters \
+    sentence-transformers faiss-cpu ollama
+
+# Install and start Ollama
 ollama pull phi
+ollama serve
+Run
+streamlit run ch_code.py
+Open browser at http://localhost:8501
 
-2️⃣ Clone / Download Project
+💡 Usage
 
-Place all files inside a folder, e.g.:
+Upload a text-based PDF
+Ask questions in natural language
+Get answers grounded in document content
 
-rag_chatbot/
-├── code.py
-├── rag_basic.py
-├── README.md
+Example Questions:
 
-3️⃣ Create & Activate Virtual Environment
-py -m venv venv
-venv\Scripts\activate
+"What is the main topic of this document?"
+"Summarize the key findings"
+"What requirements are mentioned?"
 
-4️⃣ Install Dependencies
-pip install streamlit langchain-community langchain-text-splitters \
-           sentence-transformers faiss-cpu pypdf
-
-5️⃣ Run the Chatbot
-streamlit run app.py
-
-
-Open the browser at:
-
-http://localhost:8501
-
-
-Upload a PDF and start asking questions.
-
-🧠 Key Design Decisions (Interview Focus)
-Why Local LLM instead of OpenAI / GPT?
-
-Avoids cost and rate limits
-
-Preserves data privacy
-
-Demonstrates real understanding of model constraints
-
-Makes the system reproducible offline
-
-Why Small Models Work Well Here
-
-Because RAG supplies relevant context, the LLM:
-
-Does not need to “remember” everything
-
-Only needs to reason over retrieved text
-
-This allows smaller models to perform well with lower resource usage.
-
-How Hallucinations Are Reduced
-
-Answers are restricted to retrieved document chunks
-
-Prompt explicitly forbids external knowledge
-
-If information is missing, the model responds with “I don’t know”
-
-Why Not Use High-Level LangChain Wrappers?
-
-LangChain APIs change frequently
-
-Explicit retrieval + prompt injection is:
-
-More stable
-
-Easier to debug
-
-Easier to explain in interviews
 
 ⚠️ Limitations
+Supported:
+✅ Text-based PDFs (reports, papers, documentation)
+Not Supported:
+❌ Scanned PDFs or image-based documents (OCR can be added as future enhancement)
+Performance:
 
-Response time is slower than cloud LLMs (CPU-only local inference)
+Response time slower than cloud LLMs (local CPU inference)
+Best for documents under 100 pages
 
-Embeddings are rebuilt when a new PDF is uploaded
 
-Designed for demo and learning, not production scale
+🔧 Technical Highlights
+Chunking Strategy:
+
+500 characters per chunk
+100-character overlap (20%)
+Hierarchical separators for better context
+
+Retrieval:
+
+Top-4 most relevant chunks
+Cosine similarity search
+384-dimensional embeddings
+
+Design Decisions:
+
+Custom implementation for full control
+FAISS for local-first approach
+Explicit caching with file hash
+Proper error handling and cleanup
+
+
+🎯 Use Cases
+
+Privacy-sensitive document analysis
+Offline/air-gapped environments
+Internal knowledge base search
+Learning RAG fundamentals
+Cost-conscious applications
+
 
 🔮 Future Improvements
 
-Persistent vector store per document
+ Conversation history/memory
+ Multi-PDF support
+ Page number citations
+ OCR for scanned documents
+ Evaluation metrics (RAGAS)
 
-Chat history / conversational memory
 
-Support for multiple PDFs
+📄 License
+MIT License - Free to use and modify
 
-Optional cloud deployment
+🙏 Acknowledgments
+Built with: Ollama • LangChain • FAISS • Sentence Transformers • Hugging Face
 
-UI improvements and response streaming
-
-🎯 Intended Audience
-
-This project is aimed at:
-
-GenAI Engineer roles
-
-ML / AI Engineer roles
-
-Candidates learning RAG and LLM systems
-
-Interview demonstrations and technical discussions
-
-🧾 Summary
-
-This project demonstrates:
-
-Practical RAG implementation
-
-Clear understanding of GenAI system design
-
-Ability to work with local LLMs and real constraints
-
-Strong debugging and architectural reasoning
-
-📌 Note
-
-Response latency is expected due to fully local execution on CPU.
-
-This is an intentional trade-off for cost, privacy, and transparency.
+⭐ Star this repo if you find it helpful!
