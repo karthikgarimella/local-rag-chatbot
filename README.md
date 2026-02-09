@@ -1,4 +1,4 @@
-Local RAG PDF Chatbot
+# Local RAG PDF Chatbot
 A fully local, privacy-first PDF Question & Answer chatbot using Retrieval-Augmented Generation (RAG). Answers questions strictly from uploaded documents without using any paid APIs or cloud services.
 
 🎯 Overview
@@ -121,3 +121,4 @@ MIT License - Free to use and modify
 Built with: Ollama • LangChain • FAISS • Sentence Transformers • Hugging Face
 
 ⭐ Star this repo if you find it helpful!
+
